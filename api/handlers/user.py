@@ -21,7 +21,7 @@ def create_user():
     user_data = request.json
     user = UserModel(**user_data)
     # обработчик на создание пользователя с неуникальным username
-    if db.session.scalars(db.select(UserModel).where(UserModel.username==user.name)).one_or_none():
+    if db.session.scalars(db.select(UserModel).where(UserModel.username==user.username)).one_or_none():
         return {"error": "User already exists"}, 409
     user.save()
     return user_schema.dump(user), 201
