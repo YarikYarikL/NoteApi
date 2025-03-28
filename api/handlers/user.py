@@ -36,8 +36,10 @@ def create_user(**kwargs):
 
 
 @app.route("/users/<int:user_id>", methods=["PUT"], provide_automatic_options=False)
-# @multi_auth.login_required(role="admin")
+@multi_auth.login_required(role="admin")
+@doc(responses={"403": {"description": "User has no admin permission"}})
 @doc(description='Api for user edit', tags=['Users'], summary="Edit user")
+@doc(security= [{"basicAuth": []}])
 @use_kwargs(UserEditSchema, )
 @marshal_with(UserSchema, code=200)
 def edit_user(user_id, **kwargs):
@@ -52,6 +54,7 @@ def edit_user(user_id, **kwargs):
 @multi_auth.login_required(role="admin")
 @doc(responses={"404": {"description": "User not found"}})
 @doc(description='Api for user delete', tags=['Users'], summary="Delete user")
+@doc(security= [{"basicAuth": []}])
 def delete_user(user_id):
     """
     Пользователь может удалять ТОЛЬКО свои заметки
