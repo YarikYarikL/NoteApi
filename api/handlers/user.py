@@ -3,6 +3,7 @@ from api import app, db, request, multi_auth
 from api.models.user import UserModel
 from api.schemas.user import UserEditSchema, UserSchema, user_schema, users_schema, UserRequestSchema
 from flask_apispec import doc, marshal_with, use_kwargs
+from flask_babel import _
 
 
 @app.route("/users/<int:user_id>", provide_automatic_options=False)
@@ -59,7 +60,8 @@ def delete_user(user_id):
     """
     Пользователь может удалять ТОЛЬКО свои заметки
     """
-    user = db.get_or_404(UserModel, user_id, description=f"Note with id={user_id} not found")
+    user = db.get_or_404(UserModel, user_id, description=_("User with id=%(user_id)s not found", user_id=user_id))
     user.delete()
-    return jsonify({"message": f"User with={user_id} is deleted"}), 200
+    return {"message": _("User with=%(user_id)s is deleted", user_id=user_id)}
+                                    #%()s - s обозначает, что тип данных - String
     

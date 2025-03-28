@@ -11,6 +11,7 @@ from sqlalchemy import event
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask_apispec import FlaskApiSpec
+from flask_babel import Babel
 
 
 
@@ -23,6 +24,11 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 class Base(DeclarativeBase):
     pass
+
+
+def get_locale():
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
 
 
 app = Flask(__name__)
@@ -59,6 +65,7 @@ token_auth = HTTPTokenAuth('Bearer')
 multi_auth = MultiAuth(basic_auth, token_auth)
 # swagger = Swagger(app)
 docs = FlaskApiSpec(app)
+babel = Babel(app, locale_selector=get_locale)
 
 
 @app.errorhandler(404)
